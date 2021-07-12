@@ -19,7 +19,7 @@ var (
 
 func main() {
 	// get docker client
-	cli, err := client.NewClientWithOpts(nil)
+	cli, err := client.NewClientWithOpts()
 	if err != nil {
 		os.Exit(1)
 	}
