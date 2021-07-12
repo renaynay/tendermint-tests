@@ -40,7 +40,7 @@ func main() {
 func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 	_, err := cli.ImageBuild(ctx, nil, types.ImageBuildOptions{
 		Tags: []string{"seed"},
-		Dockerfile: "./tendermint-seed/Dockerfile",
+		Dockerfile: "/tendermint-seed/Dockerfile",
 
 	})
 	if err != nil {
