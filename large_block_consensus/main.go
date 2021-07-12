@@ -44,13 +44,16 @@ func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, err = cli.ImageBuild(ctx, tendermintSeedFile, types.ImageBuildOptions{
+	defer tendermintSeedFile.Close()
+
+	resp, err := cli.ImageBuild(ctx, tendermintSeedFile, types.ImageBuildOptions{
 		Tags: []string{"seed"},
 		Dockerfile: "Dockerfile",
 	})
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	_, err = cli.ContainerCreate(ctx, &container_types.Config{
 		Image: "seed",
