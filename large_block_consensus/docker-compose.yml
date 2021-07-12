@@ -1,0 +1,5 @@
+version: "3.9"
+services:
+  dummy:
+    build: ./dummy/Dockerfile
+    ports:
