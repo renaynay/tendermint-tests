@@ -8,6 +8,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/container"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -38,7 +39,8 @@ func main() {
 }
 
 func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
-	tendermintSeedDir, err := os.Open("./tendermint-seed")
+	path, err := filepath.Abs("./tendermint-seed")
+	tendermintSeedDir, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
