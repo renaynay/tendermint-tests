@@ -42,7 +42,7 @@ func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 
 	_, err = cli.ContainerCreate(ctx, &container_types.Config{
 		Image: "seed",
-	}, nil, nil, nil, "seed")
+	}, nil, nil, "seed")
 	if err != nil {
 		return nil, err
 	}
