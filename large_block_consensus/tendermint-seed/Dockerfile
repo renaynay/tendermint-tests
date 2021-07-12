@@ -3,8 +3,3 @@ USER root
 COPY ./init/node_key.json ~/config/node_key.json
 COPY ./init/docker-entrypoint.sh /usr/local/bin/
 RUN chmod u+x /usr/local/bin/docker-entrypoint.sh
-
-# @TODO get the IP of the seed node
-
-
-CMD ["start --p2p.seeds c426b32f66d0b5b1fe664c9374ee28331e734f49@"]
