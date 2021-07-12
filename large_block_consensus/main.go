@@ -39,12 +39,12 @@ func main() {
 }
 
 func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
-	path, err := filepath.Abs("./tendermint-seed")
-	tendermintSeedDir, err := os.Open(path)
+	path, err := filepath.Abs("./tendermint-seed/Dockerfile")
+	tendermintSeedFile, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	_, err = cli.ImageBuild(ctx, tendermintSeedDir, types.ImageBuildOptions{
+	_, err = cli.ImageBuild(ctx, tendermintSeedFile, types.ImageBuildOptions{
 		Tags: []string{"seed"},
 		Dockerfile: "Dockerfile",
 	})
