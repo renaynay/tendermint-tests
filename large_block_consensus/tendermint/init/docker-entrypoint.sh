@@ -21,7 +21,7 @@ if [ ! -d "$TMHOME/config" ]; then
 	jq ".chain_id = \"$CHAIN_ID\" | .consensus_params.block.time_iota_ms = \"500\"" \
 		"$TMHOME/config/genesis.json" > "$TMHOME/config/genesis.json.new"
 	mv "$TMHOME/config/genesis.json.new" "$TMHOME/config/genesis.json"
-	mv "node_key.json" "$TMHOME/config/node_key.json"
+	mv "~/config/node_key.json" "$TMHOME/config/node_key.json"
 fi
 
 exec tendermint start
