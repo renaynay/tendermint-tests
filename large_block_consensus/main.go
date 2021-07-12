@@ -21,10 +21,17 @@ func main() {
 	// get docker client
 	cli, err := client.NewClientWithOpts()
 	if err != nil {
+		fmt.Println("couldnt set up client: ", err)
 		os.Exit(1)
 	}
+	fmt.Println("made docker client", cli.ClientVersion())
 	// spin up seed node
 	_, err = spinUpSeedNode(cli)
+	if err != nil {
+		fmt.Println("couldn't spin up seed node: ", err)
+		os.Exit(1)
+	}
+	fmt.Println("spun up seed node?")
 	// get peerID@IP:PORT of seed node
 	// set it as ENV VAR
 	// feed it to other clients
