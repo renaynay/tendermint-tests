@@ -40,7 +40,7 @@ func main() {
 
 func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 	path, err := filepath.Abs("./tendermint-seed/Dockerfile")
-	tendermintSeedFile, err := os.Open(path)
+	tendermintSeedFile, err := os.OpenFile(path, os.O_RDONLY, os.ModeTemporary)
 	if err != nil {
 		return nil, err
 	}
