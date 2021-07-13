@@ -70,7 +70,12 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	fmt.Println("created container!!!!!!!: ", seedContainer.Created)
+
+	err = client.StartContainer(seedContainer.ID, seedContainer.HostConfig)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("started container!!!!!!: ", seedContainer.ID)
 	return seedContainer, nil
 }
