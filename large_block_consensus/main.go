@@ -63,10 +63,12 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 				{
 					Source: "/init/docker-entrypoint.sh",
 					Destination: "/usr/local/bin/docker-entrypoint.sh",
+					Driver: "host",
 				},
 				{
 					Source: "/init/node_key.json",
 					Destination: "/tendermint/config/node_key.json",
+					Driver: "host",
 				},
 			},
 		},
