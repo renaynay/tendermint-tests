@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	docker "github.com/fsouza/go-dockerclient"
 )
@@ -31,8 +32,9 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("spun up seed node!!! Seed ID: ", seed.ID)
+	time.Sleep(time.Minute*2)
 	fmt.Println("killing container....")
-	err = client.RemoveContainer(docker.RemoveContainerOptions{ID: seed.ID})
+	err = client.StopContainer(seed.ID, 20)
 	if err != nil {
 		fmt.Println("err removing container: ", err)
 		os.Exit(1)
@@ -57,7 +59,6 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 		Config: &docker.Config{
 			Image: tendermintImage,
 			User: "root",
-			Entrypoint: []string{"chmod u+x /usr/local/bin/docker-entrypoint.sh"},
 			Mounts: []docker.Mount{
 				{
 					Source: "/init/docker-entrypoint.sh",
