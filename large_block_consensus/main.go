@@ -63,12 +63,12 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 			Mounts: []docker.HostMount{
 				{
 					Source: entrypointPath,
-					Target: "/usr/local/bin/docker-entrypoint.sh",
+					Target: "seed:/usr/local/bin/docker-entrypoint.sh",
 					Type: "bind",
 				},
 				{
 					Source: nodekeyPath,
-					Target: "/tendermint/config/node_key.json",
+					Target: "seed:/tendermint/config/node_key.json",
 					Type: "bind",
 				},
 			},
