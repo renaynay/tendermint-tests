@@ -61,7 +61,7 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 				},
 				{
 					Source: nodekeyPath,
-					Target: "~/config/node_key.json",
+					Target: "/tendermint/config/node_key.json",
 					Type: "bind",
 				},
 			},
