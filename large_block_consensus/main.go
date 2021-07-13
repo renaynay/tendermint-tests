@@ -47,10 +47,12 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 				{
 					Source: "./tendermint-seed/init/docker-entrypoint.sh",
 					Target: "/usr/local/bin/docker-entrypoint.sh",
+					Type: "bind",
 				},
 				{
 					Source: "./tendermint-seed/init/node_key.json",
 					Target: "~/config/node_key.json",
+					Type: "bind",
 				},
 			},
 		},
