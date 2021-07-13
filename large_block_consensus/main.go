@@ -61,14 +61,14 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 			User: "root",
 			Mounts: []docker.Mount{
 				{
-					Source: "/init/docker-entrypoint.sh",
+					Source: entrypointPath,
 					Destination: "/usr/local/bin/docker-entrypoint.sh",
-					Driver: "host",
+					Driver: "local",
 				},
 				{
-					Source: "/init/node_key.json",
+					Source: nodekeyPath,
 					Destination: "/tendermint/config/node_key.json",
-					Driver: "host",
+					Driver: "local",
 				},
 			},
 		},
