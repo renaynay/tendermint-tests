@@ -31,6 +31,12 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("spun up seed node!!! Seed ID: ", seed.ID)
+	fmt.Println("killing container....")
+	err = client.RemoveContainer(docker.RemoveContainerOptions{ID: seed.ID})
+	if err != nil {
+		fmt.Println("err removing container: ", err)
+		os.Exit(1)
+	}
 	// get peerID@IP:PORT of seed node
 	// set it as ENV VAR
 	// feed it to other clients
@@ -51,7 +57,7 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 		Config: &docker.Config{
 			Image: tendermintImage,
 			User: "root",
-			Cmd: []string{"chmod u+x /usr/local/bin/docker-entrypoint.sh"},
+			Entrypoint: []string{"chmod u+x /usr/local/bin/docker-entrypoint.sh"},
 		},
 		HostConfig: &docker.HostConfig{
 			Mounts: []docker.HostMount{
