@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/docker/docker/api/types"
 	container_types "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/container"
-	"os"
-	"path/filepath"
 )
 
 var (
-	ctx = context.Background()
+	ctx             = context.Background()
 	tendermintImage = "tendermint/tendermint:latest"
 
 	seedIP string
@@ -47,7 +48,7 @@ func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 	defer tendermintSeedFile.Close()
 
 	resp, err := cli.ImageBuild(ctx, tendermintSeedFile, types.ImageBuildOptions{
-		Tags: []string{"seed"},
+		Tags:       []string{"seed"},
 		Dockerfile: "Dockerfile",
 	})
 	if err != nil {
@@ -71,5 +72,3 @@ func spinUpSeedNode(cli *client.Client) (*container.Container, error) {
 	}
 	return nil, nil
 }
-
-
