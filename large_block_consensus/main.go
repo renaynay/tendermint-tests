@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	docker "github.com/fsouza/go-dockerclient"
 )
@@ -36,6 +37,15 @@ func main() {
 }
 
 func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
+	entrypointPath, err := filepath.Abs("./tendermint-seed/init/docker-entrypoint.sh")
+	if err != nil {
+		return nil, err
+	}
+	nodekeyPath, err := filepath.Abs("./tendermint-seed/init/node_key.json")
+	if err != nil {
+		return nil, err
+	}
+
 	seedContainer, err := client.CreateContainer(docker.CreateContainerOptions{
 		Name: "seed",
 		Config: &docker.Config{
@@ -45,12 +55,12 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 		HostConfig: &docker.HostConfig{
 			Mounts: []docker.HostMount{
 				{
-					Source: "./tendermint-seed/init/docker-entrypoint.sh",
+					Source: entrypointPath,
 					Target: "/usr/local/bin/docker-entrypoint.sh",
 					Type: "bind",
 				},
 				{
-					Source: "./tendermint-seed/init/node_key.json",
+					Source: nodekeyPath,
 					Target: "~/config/node_key.json",
 					Type: "bind",
 				},
