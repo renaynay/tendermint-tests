@@ -59,6 +59,7 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 		Config: &docker.Config{
 			Image: tendermintImage,
 			User: "root",
+			Entrypoint: []string{"chmod +x /usr/local/bin/docker-entrypoint.sh"},
 		},
 		HostConfig: &docker.HostConfig{
 			Mounts:	[]docker.HostMount{
