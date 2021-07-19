@@ -1,8 +1,11 @@
 package main
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -59,23 +62,6 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 		Config: &docker.Config{
 			Image: tendermintImage,
 			User: "root",
-			Entrypoint: []string{"chmod +x /usr/local/bin/docker-entrypoint.sh"},
-		},
-		HostConfig: &docker.HostConfig{
-			Mounts:	[]docker.HostMount{
-				{
-					Source: entrypointPath,
-					Target: "/usr/local/bin/docker-entrypoint.sh",
-					Type: "bind",
-					ReadOnly: false,
-				},
-				{
-					Source: nodekeyPath,
-					Target: "/tendermint/config/node_key.json",
-					Type: "bind",
-					ReadOnly: false,
-				},
-			},
 		},
 	})
 	if err != nil {
@@ -83,10 +69,60 @@ func spinUpSeedNode(client *docker.Client) (*docker.Container, error) {
 	}
 	fmt.Println("created container!!!!!!!: ", seedContainer.Created)
 
+	// upload to container
+
+	if err := uploadToContainer(client, seedContainer.ID, "docker-entrypoint.sh", entrypointPath, "/usr/local/bin/"); err != nil {
+		return nil, err
+	}
+	if err := uploadToContainer(client, seedContainer.ID, "node_key.json", nodekeyPath,  "/tendermint/config/"); err != nil {
+		return nil, err
+	}
+
 	err = client.StartContainer(seedContainer.ID, seedContainer.HostConfig)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println("started container!!!!!!: ", seedContainer.ID)
 	return seedContainer, nil
+}
+
+// TODO make this more abstract
+func uploadToContainer(client *docker.Client, containerID, filename, filepath, destination string) error {
+	// Create a tarball archive with all the data files
+	tarball := new(bytes.Buffer)
+	tw := tar.NewWriter(tarball)
+
+	file, err := os.Open(filepath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return err
+	}
+	// Insert the file into the tarball archive
+	header := &tar.Header{
+		Name: filename,
+		Mode: int64(0777),
+		Size: int64(len(data)),
+	}
+	if err := tw.WriteHeader(header); err != nil {
+		return err
+	}
+	if _, err := tw.Write(data); err != nil {
+		return err
+	}
+
+	if err := tw.Close(); err != nil {
+		return err
+	}
+
+	// Upload the tarball into the destination container
+	return client.UploadToContainer(containerID, docker.UploadToContainerOptions{
+		Context:     ctx,
+		InputStream: tarball,
+		Path:        destination,
+	})
 }
